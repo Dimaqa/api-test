@@ -1,9 +1,17 @@
 from aiohttp import web
 import json
+import db
 
 async def add_company(request):
     data = await request.json()
-    print(data)
-    response_obj = { 'status' : 'success' }
-    code = 200
+    company = data.get('company')
+    phone = data.get('phone')
+    if bool(company):
+        async with request.app['db_pool'].acquire() as conn:
+            db.insert_company(conn, company, phone)
+        response_obj = { 'status' : 'success' }
+        code = 200
+    else:
+        response_obj = { 'status' : 'failed' }
+        code = 400
     return web.Response(text=json.dumps(response_obj), status=code)
