@@ -6,7 +6,9 @@ create Table companies(
 create Table workers(
 	id serial primary key,
 	name varchar(64) not null unique,
-	phone varchar(64)
+    company varchar(64),
+	phone varchar(64),
+    foreign key (company) References companies(name)
 );
 create table products(
 	id serial primary key,
