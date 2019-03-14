@@ -10,7 +10,7 @@ class ApiTests(unittest.TestCase):
 
     def test_add_company(self):
         url = URL.format(post_method='add_company')
-        valid_data = json.dumps({'company': 'intel'}).encode('utf-8')
+        valid_data = json.dumps({'company': 'Avito'}).encode('utf-8')
         code = requests.post(url, valid_data).status_code
         self.assertEqual(code, 200)
         bad_data = json.dumps({'bad_company': 'intel'}).encode('utf-8')
@@ -19,7 +19,7 @@ class ApiTests(unittest.TestCase):
 
     def test_add_worker(self):
         url = URL.format(post_method='add_worker')
-        valid_data = json.dumps({'name' : 'Dmitry', 'company': 'intel'}).encode('utf-8')
+        valid_data = json.dumps({'name' : 'Dmitry', 'company': 'Avito'}).encode('utf-8')
         code = requests.post(url, valid_data).status_code
         self.assertEqual(code, 200)
         bad_data = json.dumps({'name' : 'Dmitry', 'company' : 'not existing company'}).encode('utf-8')
