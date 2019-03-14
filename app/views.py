@@ -39,3 +39,21 @@ async def add_worker(request):
         response_obj = {'status': 'failed'}
         code = 400
     return web.Response(text=json.dumps(response_obj), status=code)
+
+
+async def add_product(request):
+    data = await request.json()
+    name = data.get('name')
+    if bool(name):
+        async with request.app['db_pool'].acquire() as conn:
+            error = await db.insert_product(conn, name)
+        if error:
+            response_obj = {'status': 'failed', 'error': error}
+            code = 200
+        else:
+            response_obj = {'status': 'success'}
+            code = 200
+    else:
+        response_obj = {'status': 'failed'}
+        code = 400
+    return web.Response(text=json.dumps(response_obj), status=code)

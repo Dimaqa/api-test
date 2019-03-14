@@ -26,3 +26,11 @@ class ApiTests(unittest.TestCase):
         code = requests.post(url, bad_data).status_code
         self.assertEqual(code, 400)
 
+    def test_add_products(self):
+        url = URL.format(post_method='add_product')
+        valid_data = json.dumps({'name': 'Car'}).encode('utf-8')
+        code = requests.post(url, valid_data).status_code
+        self.assertEqual(code, 200)
+        bad_data = json.dumps({'bad_name': 'not product'}).encode('utf-8')
+        code = requests.post(url, bad_data).status_code
+        self.assertEqual(code, 400)
