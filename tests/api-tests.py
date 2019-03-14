@@ -13,3 +13,6 @@ class ApiTests(unittest.TestCase):
         valid_data = json.dumps({'company': 'intel'}).encode('utf-8')
         code = requests.post(url, valid_data).status_code
         self.assertEqual(code, 200)
+        bad_data = json.dumps({'bad_company': 'intel'}).encode('utf-8')
+        code = requests.post(url, bad_data).status_code
+        self.assertEqual(code, 400)
