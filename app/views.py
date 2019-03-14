@@ -8,9 +8,13 @@ async def add_company(request):
     phone = data.get('phone')
     if bool(company):
         async with request.app['db_pool'].acquire() as conn:
-            db.insert_company(conn, company, phone)
-        response_obj = { 'status' : 'success' }
-        code = 200
+           error = await db.insert_company(conn, company, phone)
+        if error:
+            response_obj = { 'status' : 'failed', 'error' : error}
+            code = 200
+        else:
+            response_obj = { 'status' : 'success' }
+            code = 200
     else:
         response_obj = { 'status' : 'failed' }
         code = 400

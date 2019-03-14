@@ -1,4 +1,5 @@
 import asyncpgsa
+from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import (
     MetaData, Table, Column, ForeignKey,
     Integer, String, DateTime
@@ -27,4 +28,8 @@ async def init_db(app):
 
 async def insert_company(conn, name, phone=None):
     stmt = companies.insert().values(name=name, phone=phone)
-    await conn.execute(stmt)
+    try:
+        await conn.execute(stmt)
+    except UniqueViolationError:
+        return 'Company already exists'
+    return None
