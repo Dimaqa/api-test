@@ -45,18 +45,28 @@ async def add_product(request):
     data = await request.json()
     name = data.get('name')
     if bool(name):
-        async with request.app['db_pool'].acquire() as conn:
-            error = await db.insert_product(conn, name)
-        if error:
-            response_obj = {'status': 'failed', 'error': error}
-            code = 200
-        else:
+        # search in redis first
+        val = await request.app['redis_pool'].get(name)
+        if bool(val):
+            # if we found in redis, no need to add again
             response_obj = {'status': 'success'}
             code = 200
+        else:
+            # else add to db and redis
+            await request.app['redis_pool'].set(name, 'True')
+            async with request.app['db_pool'].acquire() as conn:
+                error = await db.insert_product(conn, name)
+            if error:
+                response_obj = {'status': 'failed', 'error': error}
+                code = 200
+            else:
+                response_obj = {'status': 'success'}
+                code = 200
     else:
         response_obj = {'status': 'failed'}
         code = 400
     return web.Response(text=json.dumps(response_obj), status=code)
+
 
 async def edit_responsible(request):
     data = await request.json()
@@ -66,10 +76,10 @@ async def edit_responsible(request):
         async with request.app['db_pool'].acquire() as conn:
             data = await db.edit_responsible(conn, product_id, worker_id)
         if isinstance(data, str):
-            response_obj = {'status': 'failed', 'error' : data}
+            response_obj = {'status': 'failed', 'error': data}
             code = 400
         else:
-            response_obj = {'status': 'success', 'current_list' : data}
+            response_obj = {'status': 'success', 'current_list': data}
             code = 200
     else:
         response_obj = {'status': 'failed'}
