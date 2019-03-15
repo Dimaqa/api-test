@@ -23,7 +23,8 @@ services:
     ports:
       - 5433:5432
     volumes:
-      - /var/lib/postgresql/data
+      - ./data/db:/var/lib/postgresql/data
+      - ./create-tables.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - webnet
   logs:
@@ -33,7 +34,7 @@ services:
     ports:
       - 6380:6379
     volumes:
-      - /bitnami/redis/data
+      - ./data/redis:/bitnami/redis/data
     networks:
       - webnet
 networks:
