@@ -7,11 +7,14 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - db
+      - database
       - logs
+    links:
+     - database
+     - logs
     networks:
       - webnet
-  db:
+  database:
     image: postgres
     environment:
       - POSTGRES_USER=postgres
@@ -28,7 +31,7 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - 6379:6379
+      - 6380:6379
     volumes:
       - /bitnami/redis/data
     networks:

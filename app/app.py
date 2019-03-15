@@ -9,7 +9,7 @@ from aiohttp_session.redis_storage import RedisStorage
 async def setup_redis(app):
 
     pool = await aioredis.create_redis_pool((
-        'redis://localhost'
+        'redis://logs'
     ))
 
     async def close_redis(app):

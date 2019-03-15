@@ -6,8 +6,8 @@ from db_tables import companies, workers, connection, products
 
 async def init_db(app):
     pool = await asyncpgsa.create_pool(
-        host='localhost',
-        port='5433',
+        host='database',
+        port='5432',
         database='postgres',
         user='postgres',
         password='postgress',
