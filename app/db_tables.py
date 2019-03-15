@@ -34,4 +34,3 @@ products = Table(
     Column('id', Integer, primary_key=True),
     Column('name', String(64), nullable=False, unique=True),
 )
-

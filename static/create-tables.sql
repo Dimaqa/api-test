@@ -1,20 +1,24 @@
-create Table companies(
+create Table companies
+(
 	id serial primary key,
 	name varchar(64) not null unique,
 	phone varchar(64)
 );
-create Table workers(
+create Table workers
+(
 	id serial primary key,
 	name varchar(64) not null unique,
-    company varchar(64),
+	company varchar(64),
 	phone varchar(64),
-    foreign key (company) References companies(name)
+	foreign key (company) References companies(name)
 );
-create table products(
+create table products
+(
 	id serial primary key,
 	name varchar(64) NOT Null unique
 );
-create Table connection(
+create Table connection
+(
 	worker_id serial Not null,
 	product_id serial Not null,
 	primary key(worker_id, product_id),

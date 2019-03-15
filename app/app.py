@@ -6,6 +6,7 @@ import aioredis
 from aiohttp_session import setup as setup_session
 from aiohttp_session.redis_storage import RedisStorage
 
+
 async def setup_redis(app):
 
     pool = await aioredis.create_redis_pool((
@@ -20,10 +21,11 @@ async def setup_redis(app):
     app['redis_pool'] = pool
     return pool
 
+
 async def init_app():
     app = web.Application()
     await init_db(app)
-    redis_pool  = await setup_redis(app)
+    redis_pool = await setup_redis(app)
     setup_session(app, RedisStorage(redis_pool))
     setup_routes(app)
     return app

@@ -2,4 +2,4 @@ aiohttp
 asyncpgsa
 sqlalchemy
 aioredis
-aiohttp_session
+aiohttp_sessionS
