@@ -9,6 +9,23 @@
        ports:
          - "5433:5432"
        volumes:
-         - /var/lib/postgresql/data
+         - ./data/db:/var/lib/postgresql/data
+    logs:
+      image: redis
+      environment:
+        - ALLOW_EMPTY_PASSWORD=yes
+      ports:
+        - '6379:6379'
+      volumes:
+      - ./data/redis:/bitnami/redis/data
+    app:
+      build:
+        context: ./app
+        dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - logs
    volumes: 
      pgdata:
