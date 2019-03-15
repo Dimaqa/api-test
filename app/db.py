@@ -30,7 +30,11 @@ products = Table(
     Column('id', Integer, primary_key=True),
     Column('name', String(64), nullable=False, unique=True),
 )
-
+connection = Table(
+    'connection', metadata,
+    Column('worker_id', Integer, ForeignKey('workers.id')),
+    Column('porduct_id', Integer, ForeignKey('product.id'))
+)
 
 async def init_db(app):
     pool = await asyncpgsa.create_pool(
@@ -74,3 +78,23 @@ async def insert_worker(conn, name, company):
         except ForeignKeyViolationError:
             return 'There is no such company'
     return None
+
+async def edit_responsible(conn, product_id, worker_id):
+    stmt = connection.insert().values(product_id=product_id, worker_id=worker_id)
+    try:
+        await conn.execute(stmt)
+    except UniqueViolationError:
+        try:
+            stmt = update(connection).where(
+                connection.c.product_id == product_id).values(worker_id=worker_id)
+            await conn.execute(stmt)
+        except ForeignKeyViolationError:
+            return 'There is worker or product with such id'
+    #return current resposible list with (product : name) format
+    stmt = select(
+        [products.c.name, workers.c.name.label('uname')]).\
+        select_from(products. \
+        outerjoin(connection). \
+        outerjoin(workers))
+    records = await conn.fetch(stmt)
+    return records

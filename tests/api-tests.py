@@ -34,3 +34,15 @@ class ApiTests(unittest.TestCase):
         bad_data = json.dumps({'bad_name': 'not product'}).encode('utf-8')
         code = requests.post(url, bad_data).status_code
         self.assertEqual(code, 400)
+    
+    def test_add_edit_responsible(self):
+        url = URL.format(post_method='edit_responsible')
+        valid_data = json.dumps({'woker_id': 1, 'product_id' : 1}).encode('utf-8')
+        code = requests.post(url, valid_data).status_code
+        self.assertEqual(code, 200)
+        bad_data = json.dumps({'woker_id': 999, 'product_id' : 1}).encode('utf-8')
+        code = requests.post(url, bad_data).status_code
+        self.assertEqual(code, 400)
+        bad_data = json.dumps({'woker_id': 'string', 'product_id' : 1}).encode('utf-8')
+        code = requests.post(url, bad_data).status_code
+        self.assertEqual(code, 400)

@@ -57,3 +57,21 @@ async def add_product(request):
         response_obj = {'status': 'failed'}
         code = 400
     return web.Response(text=json.dumps(response_obj), status=code)
+
+async def edit_responsible(request):
+    data = await request.json()
+    product_id = data.get('product')
+    worker_id = data.get('worker')
+    if bool(product_id) and bool(worker_id):
+        async with request.app['db_pool'].acquire() as conn:
+            data = db.edit_responsible(conn, product_id, worker_id)
+        if isinstance(data, dict):
+            response_obj = {'status': 'success', 'body' : data}
+            code = 200
+        else:
+            response_obj = {'status': 'failed', 'error' : data}
+            code = 400
+    else:
+        response_obj = {'status': 'failed'}
+        code = 400
+    return web.Response(text=json.dumps(response_obj), status=code)
