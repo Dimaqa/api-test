@@ -1,13 +1,13 @@
    version: "3"
    services:
-     db:
+    db:
        image: postgres
        environment:
          - POSTGRES_USER=postgres
          - POSTGRES_PASSWORD=postgress
          - POSTGRES_DB=postgres
        ports:
-         - "5433:5432"
+         - 5433:5433
        volumes:
          - ./data/db:/var/lib/postgresql/data
     logs:
@@ -15,17 +15,15 @@
       environment:
         - ALLOW_EMPTY_PASSWORD=yes
       ports:
-        - '6379:6379'
+        - 6379:6379
       volumes:
       - ./data/redis:/bitnami/redis/data
     app:
       build:
         context: ./app
         dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-      - logs
-   volumes: 
-     pgdata:
+      ports:
+        - 8080:8080
+      depends_on:
+        - db
+        - logs
