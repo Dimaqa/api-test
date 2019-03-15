@@ -9,7 +9,7 @@ connection = Table(
     'connection', metadata,
 
     Column('worker_id', Integer, ForeignKey('workers.id')),
-    Column('product_id', Integer, ForeignKey('product.id'))
+    Column('product_id', Integer, ForeignKey('products.id'))
 )
 
 companies = Table(

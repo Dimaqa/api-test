@@ -1,5 +1,5 @@
 import asyncpgsa
-from asyncpg.exceptions import UniqueViolationError, ForeignKeyViolationError
+from asyncpg.exceptions import UniqueViolationError, ForeignKeyViolationError, DataError
 from sqlalchemy.sql import select, update
 from db_tables import companies, workers, connection, products
 
@@ -53,20 +53,20 @@ async def edit_responsible(conn, product_id, worker_id):
     try:
         await conn.execute(stmt)
     except UniqueViolationError:
-        try:
-            stmt = update(connection).where(
-                connection.c.product_id == product_id).values(worker_id=worker_id)
-            await conn.execute(stmt)
-        except ForeignKeyViolationError:
-            return 'There is worker or product with such id'
-    #return current resposible list with (product : name) format
-    # stmt = select(
-    #     [products.c.name, workers.c.name.label('uname')]).\
-    #     select_from(products.
-    #                 outerjoin(connection).
-    #                 outerjoin(workers))
-    # records = {}
-    # for row in await conn.fetch(stmt):
-    #     records[row.name] = row.uname
-    # return records
-    return {'ok' : 'ok'}
+        stmt = update(connection).where(
+            connection.c.product_id == product_id).values(worker_id=worker_id)
+        await conn.execute(stmt)
+    except ForeignKeyViolationError:
+        return 'There is worker or product with such id'
+    except DataError:
+        return 'Not valid data format'
+    # return current resposible list with (product : name) format
+    stmt = select(
+        [products.c.name, workers.c.name.label('uname')]).\
+        select_from(products.
+                    outerjoin(connection).
+                    outerjoin(workers))
+
+    data = await conn.fetch(stmt)
+    records = dict(data)
+    return records
