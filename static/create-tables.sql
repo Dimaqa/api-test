@@ -25,5 +25,5 @@ create Table connection
 	foreign key(worker_id) References workers(id),
 	foreign key(product_id) References products(id)
 );
-insert into wokers(name) values('Oleg');
+insert into workers(name) values('Oleg');
 insert into products(name) values('Sheep');

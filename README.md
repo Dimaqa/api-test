@@ -20,5 +20,5 @@ docker-compose up
 
 ```Bash
 cd tests
-python -m unittest api-tests.py
+python -m unittest api-tests
 ````
