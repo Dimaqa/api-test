@@ -17,6 +17,9 @@ class ApiTests(unittest.TestCase):
         bad_data = json.dumps({'bad_company': 'intel'}).encode('utf-8')
         code = requests.post(url, bad_data).status_code
         self.assertEqual(code, 400)
+        not_json = {'company': 'amd'}
+        code = requests.post(url, not_json).status_code
+        self.assertEqual(code, 400)
 
     def test_add_worker(self):
         url = URL.format(post_method='add_worker')
