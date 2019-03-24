@@ -1,5 +1,7 @@
 import asyncpgsa
-from asyncpg.exceptions import UniqueViolationError, ForeignKeyViolationError, DataError
+from asyncpg.exceptions import (
+    UniqueViolationError, ForeignKeyViolationError, DataError
+    )
 from sqlalchemy.sql import select, update
 from db_tables import companies, workers, connection, products
 
@@ -22,6 +24,8 @@ async def insert_company(conn, name, phone=None):
         await conn.execute(stmt)
     except UniqueViolationError:
         return 'Company already exists'
+    except DataError:
+        return 'Not valid data format'
     return None
 
 
@@ -31,6 +35,8 @@ async def insert_product(conn, name):
         await conn.execute(stmt)
     except UniqueViolationError:
         return 'Products already exists'
+    except DataError:
+        return 'Not valid data format'
     return None
 
 
@@ -45,11 +51,14 @@ async def insert_worker(conn, name, company):
             await conn.execute(stmt)
         except ForeignKeyViolationError:
             return 'There is no such company'
+    except DataError:
+        return 'Not valid data format'
     return None
 
 
 async def edit_responsible(conn, product_id, worker_id):
-    stmt = connection.insert().values(product_id=product_id, worker_id=worker_id)
+    stmt = connection.insert().values(
+        product_id=product_id, worker_id=worker_id)
     try:
         await conn.execute(stmt)
     except UniqueViolationError:
