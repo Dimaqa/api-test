@@ -20,6 +20,9 @@ class ApiTests(unittest.TestCase):
         not_json = {'company': 'amd'}
         code = requests.post(url, not_json).status_code
         self.assertEqual(code, 400)
+        not_str = json.dumps(
+            {'company': 123}).encode('utf-8')
+        self.assertEqual(code, 400)
 
     def test_add_worker(self):
         url = URL.format(post_method='add_worker')
@@ -31,6 +34,9 @@ class ApiTests(unittest.TestCase):
             {'name': 'Dmitry', 'company': 'not existing company'}).encode('utf-8')
         code = requests.post(url, bad_data).status_code
         self.assertEqual(code, 400)
+        not_str = json.dumps(
+            {'name': 123}).encode('utf-8')
+        self.assertEqual(code, 400)
 
     def test_add_products(self):
         url = URL.format(post_method='add_product')
@@ -41,6 +47,9 @@ class ApiTests(unittest.TestCase):
         bad_data = json.dumps(
             {'bad_name': 'not product'}).encode('utf-8')
         code = requests.post(url, bad_data).status_code
+        self.assertEqual(code, 400)
+        not_str = json.dumps(
+            {'name': 123}).encode('utf-8')
         self.assertEqual(code, 400)
 
     def test_add_edit_responsible(self):
