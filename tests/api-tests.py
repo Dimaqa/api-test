@@ -22,6 +22,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(code, 400)
         not_str = json.dumps(
             {'company': 123}).encode('utf-8')
+        code = requests.post(url, not_str).status_code
         self.assertEqual(code, 400)
 
     def test_add_worker(self):
@@ -36,6 +37,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(code, 400)
         not_str = json.dumps(
             {'name': 123}).encode('utf-8')
+        code = requests.post(url, not_str).status_code
         self.assertEqual(code, 400)
 
     def test_add_products(self):
@@ -50,6 +52,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(code, 400)
         not_str = json.dumps(
             {'name': 123}).encode('utf-8')
+        code = requests.post(url, not_str).status_code
         self.assertEqual(code, 400)
 
     def test_add_edit_responsible(self):

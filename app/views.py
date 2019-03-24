@@ -16,7 +16,7 @@ async def add_company(request):
             error = await db.insert_company(conn, company, phone)
         if error:
             response_obj = {'status': 'failed', 'error': error}
-            code = 200
+            code = 400
         else:
             response_obj = {'status': 'success'}
             code = 200
@@ -60,13 +60,13 @@ async def add_product(request):
             code = 200
         else:
             # else add to db and redis
-            await request.app['redis_pool'].set(name, 'True')
             async with request.app['db_pool'].acquire() as conn:
                 error = await db.insert_product(conn, name)
             if error:
                 response_obj = {'status': 'failed', 'error': error}
-                code = 200
+                code = 400
             else:
+                await request.app['redis_pool'].set(name, 'True')
                 response_obj = {'status': 'success'}
                 code = 200
     return web.Response(text=json.dumps(response_obj), status=code)

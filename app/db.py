@@ -23,7 +23,8 @@ async def insert_company(conn, name, phone=None):
     try:
         await conn.execute(stmt)
     except UniqueViolationError:
-        return 'Company already exists'
+        # if company already exists, thats ok cuz of idempotence
+        return None
     except DataError:
         return 'Not valid data format'
     return None
@@ -34,7 +35,8 @@ async def insert_product(conn, name):
     try:
         await conn.execute(stmt)
     except UniqueViolationError:
-        return 'Products already exists'
+        # if product already exists, thats ok cuz of idempotence
+        return None
     except DataError:
         return 'Not valid data format'
     return None
