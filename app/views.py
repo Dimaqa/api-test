@@ -9,7 +9,7 @@ async def add_company(request):
         company = data['company']
         phone = data.get('phone')
     except:
-        response_obj = {'status': 'failed', 'error': 'company name required'}
+        response_obj = {'status': 'failed', 'error': 'not valid data'}
         code = 400
     else:
         async with request.app['db_pool'].acquire() as conn:
@@ -29,7 +29,7 @@ async def add_worker(request):
         name = data['name']
         company = data.get('company')
     except:
-        response_obj = {'status': 'failed', 'error': 'name required'}
+        response_obj = {'status': 'failed', 'error': 'not valid data''}
         code = 400
     else:
         async with request.app['db_pool'].acquire() as conn:
@@ -49,7 +49,7 @@ async def add_product(request):
         data = await request.json()
         name = data['name']
     except:
-        response_obj = {'status': 'failed', 'error': 'name required'}
+        response_obj = {'status': 'failed', 'error': 'not valid data''}
         code = 400
     else:
         # search in redis first
@@ -78,7 +78,7 @@ async def edit_responsible(request):
         product_id = data['product_id']
         worker_id = data['worker_id']
     except:
-        response_obj = {'status': 'failed', 'error': 'both id required'}
+        response_obj = {'status': 'failed', 'error': 'not valid data''}
         code = 400
     else:
         async with request.app['db_pool'].acquire() as conn:
