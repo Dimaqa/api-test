@@ -9,7 +9,7 @@ async def add_company(request):
         company = data['company']
         phone = data.get('phone')
     except:
-        response_obj = {'status': 'failed'}
+        response_obj = {'status': 'failed', 'error': 'company name required'}
         code = 400
     else:
         async with request.app['db_pool'].acquire() as conn:
@@ -29,7 +29,7 @@ async def add_worker(request):
         name = data['name']
         company = data.get('company')
     except:
-        response_obj = {'status': 'failed'}
+        response_obj = {'status': 'failed', 'error': 'name required'}
         code = 400
     else:
         async with request.app['db_pool'].acquire() as conn:
@@ -49,7 +49,7 @@ async def add_product(request):
         data = await request.json()
         name = data['name']
     except:
-        response_obj = {'status': 'failed'}
+        response_obj = {'status': 'failed', 'error': 'name required'}
         code = 400
     else:
         # search in redis first
@@ -73,10 +73,14 @@ async def add_product(request):
 
 
 async def edit_responsible(request):
-    data = await request.json()
-    product_id = data.get('product_id')
-    worker_id = data.get('worker_id')
-    if bool(product_id) and bool(worker_id):
+    try:
+        data = await request.json()
+        product_id = data['product_id']
+        worker_id = data['worker_id']
+    except:
+        response_obj = {'status': 'failed', 'error': 'both id required'}
+        code = 400
+    else:
         async with request.app['db_pool'].acquire() as conn:
             data = await db.edit_responsible(conn, product_id, worker_id)
         # If we returned str, thats a eror, else dict with results
@@ -86,7 +90,4 @@ async def edit_responsible(request):
         else:
             response_obj = {'status': 'success', 'current_list': data}
             code = 200
-    else:
-        response_obj = {'status': 'failed'}
-        code = 400
     return web.Response(text=json.dumps(response_obj), status=code)
