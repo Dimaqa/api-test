@@ -79,6 +79,7 @@ async def edit_responsible(request):
     if bool(product_id) and bool(worker_id):
         async with request.app['db_pool'].acquire() as conn:
             data = await db.edit_responsible(conn, product_id, worker_id)
+        # If we returned str, thats a eror, else dict with results
         if isinstance(data, str):
             response_obj = {'status': 'failed', 'error': data}
             code = 400
